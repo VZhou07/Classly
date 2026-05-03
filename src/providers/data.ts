@@ -1,47 +1,46 @@
-import { DataProvider,GetListParams,GetListResponse,BaseRecord} from "@refinedev/core";
+import { BACKEND_BASE_URL } from "@/constants";
+import {
+  createDataProvider,
+  type CreateDataProviderOptions,
+} from "@refinedev/rest";
+import type { ListResponse } from "@/types";
 
-const mockSubjects = [
-  {
-    id: 1,
-    code: "CS-301",
-    name: "Data Structures and Algorithms",
-    department: "Computer Science",
-    description:
-      "Lists, trees, graphs, and asymptotic analysis with weekly programming assignments.",
-  },
-  {
-    id: 2,
-    code: "MATH-220",
-    name: "Linear Algebra",
-    department: "Mathematics",
-    description:
-      "Matrices, vector spaces, eigenvalues, and orthogonality with applications in science and engineering.",
-  },
-  {
-    id: 3,
-    code: "ENG-201",
-    name: "Technical Writing for STEM",
-    department: "English",
-    description:
-      "Audience-focused technical reports, documentation, and presentations with structured revision cycles.",
-  },
-] as const;
+const options: CreateDataProviderOptions = {
+  getList: {
+    getEndpoint: ({ resource }) => resource,
+    mapResponse: async (response) => {
+      const payload: ListResponse = await response.json();
+      return payload.data ?? [];
+    },
+    getTotalCount: async (response) => {
+      const payload: ListResponse = await response.json();
+      return payload.pagination?.total ?? 0;
+    },
+    buildQueryParams: async ({ resource, pagination, filters }) => {
+      const page = pagination?.currentPage ?? 1;
+      const pageSize = pagination?.pageSize ?? 10;
 
-export const dataProvider:DataProvider={
-  getList:async <TData extends BaseRecord = BaseRecord>({resource}:
-    GetListParams):Promise<GetListResponse<TData>>=>{
-      if (resource!=="subjects"){
-        return {data:[] as TData[], total:0};
-      }
-      return {
-        data:mockSubjects as unknown as TData[],
-        total:mockSubjects.length,
-      }
-  },
-  getOne:async()=>{throw new Error("This function is not present in mock")},
-  create:async()=>{throw new Error("This function is not present in mock")},
-  update:async()=>{throw new Error("This function is not present in mock")},
-  deleteOne:async()=>{throw new Error("This function is not present in mock")},
+      const params: Record<string, string> = {
+        page: String(page),
+        limit: String(pageSize),
+      };
 
-  getApiUrl:()=>"",
-}
+      filters?.forEach((filter) => {
+        const field = "field" in filter ? filter.field : "";
+
+        const value = String(filter.value);
+        if (resource === "subjects" && field === "department") {
+          params.department = value;
+        } else if (resource === "subjects" && field === "name") {
+          params.search = value; 
+        }
+      });
+
+      return params;
+    },
+  },
+};
+
+const { dataProvider } = createDataProvider(BACKEND_BASE_URL, options);
+
+export { dataProvider };
