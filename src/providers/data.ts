@@ -5,6 +5,10 @@ import {
 } from "@refinedev/rest";
 import type { ListResponse } from "@/types";
 
+
+if (!BACKEND_BASE_URL) {
+  throw new Error("BACKEND_BASE_URL is not set");
+}
 const options: CreateDataProviderOptions = {
   getList: {
     getEndpoint: ({ resource }) => resource,
