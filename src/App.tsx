@@ -1,12 +1,14 @@
 import { GitHubBanner, Refine, WelcomePage } from "@refinedev/core";
 import { DevtoolsPanel, DevtoolsProvider } from "@refinedev/devtools";
 import { RefineKbar, RefineKbarProvider } from "@refinedev/kbar";
-
+import { GraduationCap } from "lucide-react";
 import routerProvider, {
   DocumentTitleHandler,
   UnsavedChangesNotifier,
 } from "@refinedev/react-router";
 import { BrowserRouter, Outlet, Route, Routes } from "react-router";
+import ClassesList from "./pages/classes/list";
+import ClassesCreate from "./pages/classes/create";
 import "./App.css";
 import { Toaster } from "./components/refine-ui/notification/toaster";
 import { useNotificationProvider } from "./components/refine-ui/notification/use-notification-provider";
@@ -44,6 +46,12 @@ function App() {
                   list:"/subjects",
                   create:"/subjects/create",
                   meta:{label:"Subjects", icon:<Book/>}
+                },
+                {
+                  name: "classes",
+                  list:"/classes",
+                  create:"/classes/create",
+                  meta:{label:"Classes", icon:<GraduationCap/>}
                 }
               ]}
             >
@@ -55,6 +63,10 @@ function App() {
                   <Route path="subjects">
                     <Route index element={<SubjectsList/>}/>
                     <Route path="create" element={<SubjectsCreate/>}/>
+                  </Route>
+                  <Route path="classes">
+                    <Route index element={<ClassesList/>}/>
+                    <Route path="create" element={<ClassesCreate/>}/>
                   </Route>
                 </Route>
               </Routes>
