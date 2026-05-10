@@ -143,8 +143,8 @@ const Create = () => {
                       className="mb-6"
                     >
                       <FieldLabel htmlFor="rhf-create-class-form-banner">
-                        Banner Image{" "}
-                        <span className="text-red-500">*</span>
+                        Banner Image
+                        <span className="text-red-500">{fieldState.error?("*"):(null)}</span>
                       </FieldLabel>
                       <UploadWidget
                         value={
@@ -171,6 +171,7 @@ const Create = () => {
                     <Field data-invalid={fieldState.invalid}>
                       <FieldLabel htmlFor="rhf-create-class-form-title">
                         Class name
+                        <span className="text-red-500">{fieldState.error?("*"):(null)}</span>
                       </FieldLabel>
                       <Input
                         {...field}
@@ -193,6 +194,7 @@ const Create = () => {
                     <Field data-invalid={fieldState.invalid}>
                       <FieldLabel htmlFor="rhf-create-class-form-description">
                         Description
+                        <span className="text-red-500">{fieldState.error?("*"):(null)}</span>
                       </FieldLabel>
                       <InputGroup>
                         <InputGroupTextarea
@@ -230,6 +232,8 @@ const Create = () => {
                       >
                         <FieldLabel htmlFor="rhf-create-class-form-status">
                           Status
+                          <span className="text-red-500">{fieldState.error?("*"):(null)}</span>
+
                         </FieldLabel>
                         <Select
                           {...field}
@@ -261,6 +265,8 @@ const Create = () => {
                       <Field data-invalid={fieldState.invalid}>
                         <FieldLabel htmlFor="form-rhf-create-class-form-capacity">
                           Capacity
+                          <span className="text-red-500">{fieldState.error?("*"):(null)}</span>
+
                         </FieldLabel>
                         <Input
                           {...field}
@@ -290,6 +296,8 @@ const Create = () => {
                       >
                         <FieldLabel htmlFor="rhf-create-class-form-subject">
                           Subject
+                          <span className="text-red-500">{fieldState.error?("*"):(null)}</span>
+
                         </FieldLabel>
                         <Select
                           name={field.name}
@@ -342,6 +350,8 @@ const Create = () => {
                       >
                         <FieldLabel htmlFor="rhf-create-class-form-teacher">
                           Teacher
+                          <span className="text-red-500">{fieldState.error?("*"):(null)}</span>
+
                         </FieldLabel>
                         <Select
                           name={field.name}

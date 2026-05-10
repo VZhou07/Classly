@@ -7,8 +7,7 @@ const UploadWidget = ({ value = null, onChange, disabled = false }: UploadWidget
   const widgetRef=useRef<CloudinaryWidget | null>(null);
   const onChangeRef=useRef(onChange);
   const [preview,setPreview] = useState<UploadWidgetValue | null>(value);
-  const [deleteToken,setDeleteToken]=useState<string|null>(null);
-  const [isRemoving,setIsRemoving]=useState(false);
+
   
   const openWidget=()=>{
     if (!disabled){
@@ -16,18 +15,20 @@ const UploadWidget = ({ value = null, onChange, disabled = false }: UploadWidget
     }
   }
 
-  const removeFromCloudinary=async()=>{}
 
   useEffect(()=>{
     setPreview(value);
-    if (!value){
-      setDeleteToken(null);
-    }
   },[value])
 
   useEffect(()=>{
     onChangeRef.current=onChange;
   },[onChange])
+
+  useEffect(()=>{
+    if (preview){
+      onChangeRef.current?.(preview);
+    }
+  },[preview])
 
   useEffect(()=>{
     if (typeof window==="undefined") return
@@ -38,7 +39,7 @@ const UploadWidget = ({ value = null, onChange, disabled = false }: UploadWidget
         uploadPreset: CLOUDINARY_UPLOAD_PRESET,
         multiple:false,
         folder:"uploads",
-        maxFilzeSize:5000000,
+        maxFileSize:5000000,
         clientAllowedFormats:["png","jpg","jpeg","webp"]
 
     },(error,result)=>{
@@ -48,8 +49,6 @@ const UploadWidget = ({ value = null, onChange, disabled = false }: UploadWidget
           publicId:result.info.public_id,
         }
         setPreview(payload);
-        setDeleteToken(result.info.delete_token??null);
-
         onChangeRef.current?.(payload);
       }
     });
@@ -62,11 +61,7 @@ const UploadWidget = ({ value = null, onChange, disabled = false }: UploadWidget
   return ()=>window.clearInterval(intervalId);
   },[])
 
-  useEffect(()=>{
-    if (preview){
-      onChangeRef.current?.(preview);
-    }
-  },[preview])
+
   
   
 
@@ -74,7 +69,9 @@ const UploadWidget = ({ value = null, onChange, disabled = false }: UploadWidget
     <div className="space-y-2">
 
       {preview?(
-        <div className="upload-preview"></div>
+        <div className="upload-preview">
+          <img src={preview.url} alt="Uploaded Preview" />
+        </div>
       ):(<div className="upload-dropzone" role="button" tabIndex={0}
         onClick={openWidget} onKeyDown={(e)=>{
           if (e.key==="Enter"){
@@ -87,7 +84,7 @@ const UploadWidget = ({ value = null, onChange, disabled = false }: UploadWidget
           <UploadCloud className="icon" />
           <div>
             <p>Click to upload photo</p>
-            <p>PNG,JPG up to 5MB</p>
+            <p>PNG, JPG, WEBP up to 5MB</p>
           </div>
         </div>
       </div>)}

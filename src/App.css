@@ -298,14 +298,14 @@
             @apply flex flex-col sm:flex-row items-center justify-center gap-4 p-5;
 
             .icon {
-                @apply size-10 text-orange-600;
+                @apply size-10 text-primary;
             }
 
             div {
                 @apply text-center sm:text-left;
 
                 :first-child {
-                    @apply text-sm font-bold text-orange-600 mb-1;
+                    @apply text-sm font-bold text-primary mb-1;
                 }
 
                 :last-child {
