@@ -5,7 +5,11 @@ import { Button } from "@/components/ui/button";
 import { useBack } from "@refinedev/core";
 import { Separator } from "@/components/ui/separator";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import { Controller, useForm } from "react-hook-form";
+import {
+  Controller,
+  useForm,
+  type ControllerRenderProps,
+} from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { classSchema } from "@/lib/schema";
 import * as z from "zod";
@@ -25,19 +29,24 @@ import {
 } from "@/components/ui/input-group";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import UploadWidget from "@/components/UploadWidget";
+import type { UploadWidgetValue } from "@/types";
 
 const createClassStepSchema = classSchema.pick({
   name: true,
   description: true,
   subjectId: true,
   teacherId: true,
-  capacity:true,
-  status:true,
+  capacity: true,
+  status: true,
+  bannerUrl: true,
+  bannerCldPubId: true,
 });
 
-type CreateClassFormValues = z.infer<typeof createClassStepSchema>;
 
-/** Replace with API / useList when subjects are loaded from the backend */
+type CreateClassFormInput = z.input<typeof createClassStepSchema>;
+type CreateClassFormOutput = z.infer<typeof createClassStepSchema>;
+
 const SUBJECT_OPTIONS: { id: number; name: string }[] = [
   { id: 1, name: "Subject 1" },
   { id: 2, name: "Subject 2" },
@@ -50,19 +59,41 @@ const TEACHER_OPTIONS: { id: string; name: string }[] = [
 
 const Create = () => {
   const back = useBack();
-  const form = useForm<CreateClassFormValues>({
+  const form = useForm<CreateClassFormInput, unknown, CreateClassFormOutput>({
     resolver: zodResolver(createClassStepSchema),
     defaultValues: {
       name: "",
       description: "",
-      subjectId: "",
+      subjectId: undefined,
       teacherId: "",
-      capacity: "",
-      status: "",
+      capacity: undefined,
+      status: undefined,
+      bannerUrl: "",
+      bannerCldPubId: "",
     },
   });
+  const bannerPublicId=form.watch("bannerCldPubId");
+  const setBannerImage = (
+    next: UploadWidgetValue | null,
+    field: ControllerRenderProps<CreateClassFormInput, "bannerUrl">
+  ) => {
+    if (next) {
+      field.onChange(next.url);
+      form.setValue("bannerCldPubId", next.publicId, {
+        shouldValidate: true,
+        shouldDirty: true,
+      });
+    } else {
+      field.onChange("");
+      form.setValue("bannerCldPubId", "", {
+        shouldValidate: true,
+        shouldDirty: true,
+      });
+    }
+  };
 
-  function onSubmit(data: CreateClassFormValues) {
+
+  function onSubmit(data: CreateClassFormOutput) {
     console.log(data);
     toast("You submitted the following values:", {
       description: (
@@ -101,6 +132,37 @@ const Create = () => {
               className="w-full"
               onSubmit={form.handleSubmit(onSubmit)}
             >
+              <Controller
+                name="bannerUrl"
+                control={form.control}
+                render={({ field, fieldState,formState }) => (
+                    <Field
+                      data-invalid={
+                        fieldState.invalid
+                      }
+                      className="mb-6"
+                    >
+                      <FieldLabel htmlFor="rhf-create-class-form-banner">
+                        Banner Image{" "}
+                        <span className="text-red-500">*</span>
+                      </FieldLabel>
+                      <UploadWidget
+                        value={
+                          field.value && bannerPublicId
+                            ? {
+                                url: field.value,
+                                publicId: bannerPublicId,
+                              }
+                            : null
+                        }
+                        onChange={(next: UploadWidgetValue | null) =>
+                          setBannerImage(next, field)
+                        }
+                      />
+                      {fieldState.invalid && (
+                          <FieldError errors={[fieldState.error,formState.errors.bannerCldPubId]} />
+                        )}
+                    </Field>)}/>
               <FieldGroup className="w-full gap-6">
                 <Controller
                   name="name"
@@ -230,8 +292,19 @@ const Create = () => {
                           Subject
                         </FieldLabel>
                         <Select
-                          {...field}
-                          onValueChange={(value) => field.onChange(value)}
+                          name={field.name}
+                          disabled={field.disabled}
+                          value={
+                            field.value === undefined || field.value === null
+                              ? undefined
+                              : String(field.value)
+                          }
+                          onValueChange={(value) =>
+                            field.onChange(Number(value))
+                          }
+                          onOpenChange={(open) => {
+                            if (!open) field.onBlur();
+                          }}
                         >
                           <SelectTrigger
                             id="rhf-create-class-form-subject"

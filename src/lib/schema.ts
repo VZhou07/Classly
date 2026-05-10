@@ -46,7 +46,7 @@ export const classSchema = z.object({
     capacity: z.coerce
         .number({
             required_error: "Capacity is required",
-            invalid_type_error: "Capacity is required",
+            invalid_type_error: "Please enter a valid number",
         })
         .min(1, "Capacity must be at least 1"),
     status: z.enum(["active", "inactive"], { required_error: "Status is required" }),
