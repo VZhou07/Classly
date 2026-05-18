@@ -5,7 +5,7 @@ import {
 } from "@refinedev/rest";
 import type { ListResponse } from "@/types";
 import type { HttpError } from "@refinedev/core";
-
+import type { UserRole } from "@/types";
 
 if (!BACKEND_BASE_URL) {
   throw new Error("BACKEND_BASE_URL is not set");
@@ -45,10 +45,12 @@ const options: CreateDataProviderOptions = {
     buildQueryParams: async ({ resource, pagination, filters }) => {
       const page = pagination?.currentPage ?? 1;
       const pageSize = pagination?.pageSize ?? 10;
+      const role=filters?.find((filter)=>filter.field==="role")?.value as UserRole;
 
       const params: Record<string, string> = {
         page: String(page),
         limit: String(pageSize),
+        role: role,
       };
 
       filters?.forEach((filter) => {

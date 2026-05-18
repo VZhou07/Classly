@@ -31,6 +31,16 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import UploadWidget from "@/components/UploadWidget";
 import type { UploadWidgetValue } from "@/types";
+import { useTable } from "@refinedev/react-table";
+import type { ColumnDef } from "@tanstack/react-table";
+import { useMemo } from "react";
+import type { User } from "@/types";
+import { DataTable } from "@/components/refine-ui/data-table/data-table";
+import { useState } from "react";
+import { useEffect } from "react";
+import { useList } from "@refinedev/core";
+import type { Subject } from "@/types";
+
 
 const createClassStepSchema = classSchema.pick({
   name: true,
@@ -47,15 +57,7 @@ const createClassStepSchema = classSchema.pick({
 type CreateClassFormInput = z.input<typeof createClassStepSchema>;
 type CreateClassFormOutput = z.infer<typeof createClassStepSchema>;
 
-const SUBJECT_OPTIONS: { id: number; name: string }[] = [
-  { id: 1, name: "Subject 1" },
-  { id: 2, name: "Subject 2" },
-];
 
-const TEACHER_OPTIONS: { id: string; name: string }[] = [
-  { id: "teacher-1", name: "Teacher 1" },
-  { id: "teacher-2", name: "Teacher 2" },
-];
 
 const Create = () => {
   const back = useBack();
@@ -92,6 +94,22 @@ const Create = () => {
     }
   };
 
+const {query:TeachersQuery}=useList({
+  resource:"users",
+  filters:[{
+    field:"role",
+    operator:"eq",
+    value:"teacher",
+  }],
+});
+const teachers=TeachersQuery.data?.data??[]
+const teacherIsLoading=TeachersQuery.isLoading;
+
+const {query:SubjectsQuery}=useList({
+  resource:"subjects",
+});
+const subjects=SubjectsQuery.data?.data??[]
+const subjectIsLoading=SubjectsQuery.isLoading;
 
   function onSubmit(data: CreateClassFormOutput) {
     console.log(data);
@@ -110,6 +128,7 @@ const Create = () => {
       } as React.CSSProperties,
     });
   }
+
 
   return (
     <CreateView className="class-view">
@@ -289,6 +308,7 @@ const Create = () => {
                   <Controller
                     name="subjectId"
                     control={form.control}
+                    disabled={subjectIsLoading}
                     render={({ field, fieldState }) => (
                       <Field
                         data-invalid={fieldState.invalid}
@@ -322,7 +342,7 @@ const Create = () => {
                             <SelectValue placeholder="Select a subject" />
                           </SelectTrigger>
                           <SelectContent className="max-h-72 min-w-[var(--radix-select-trigger-width)]">
-                            {SUBJECT_OPTIONS.map((subject) => (
+                            {subjects.map((subject:Subject) => (
                               <SelectItem
                                 key={subject.id}
                                 value={String(subject.id)}
@@ -343,6 +363,7 @@ const Create = () => {
                   
                     name="teacherId"
                     control={form.control}
+                    disabled={teacherIsLoading}
                     render={({ field, fieldState }) => (
                       <Field
                         data-invalid={fieldState.invalid}
@@ -370,11 +391,12 @@ const Create = () => {
                             <SelectValue placeholder="Select a teacher" />
                           </SelectTrigger>
                           <SelectContent className="max-h-72 min-w-[var(--radix-select-trigger-width)]">
-                            {TEACHER_OPTIONS.map((teacher) => (
-                              <SelectItem key={teacher.id} value={teacher.id}>
-                                {teacher.name}
-                              </SelectItem>
-                            ))}
+                          
+                            {teachers.map((teacher:User)=>{
+                              return(
+                                <SelectItem key={teacher.id} value={teacher.id}>{teacher.name}</SelectItem>
+                              )
+                            })}
                           </SelectContent>
                         </Select>
                         {fieldState.invalid && (
