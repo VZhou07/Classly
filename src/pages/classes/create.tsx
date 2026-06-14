@@ -2,14 +2,11 @@ import React from "react";
 import { CreateView } from "@/components/refine-ui/views/create-view";
 import { Breadcrumb } from "@/components/refine-ui/layout/breadcrumb";
 import { Button } from "@/components/ui/button";
-import { useBack } from "@refinedev/core";
+import { useBack, type HttpError } from "@refinedev/core";
+import { useForm } from "@refinedev/react-hook-form";
 import { Separator } from "@/components/ui/separator";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import {
-  Controller,
-  useForm,
-  type ControllerRenderProps,
-} from "react-hook-form";
+import { Controller, type ControllerRenderProps } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { classSchema } from "@/lib/schema";
 import * as z from "zod";
@@ -61,7 +58,11 @@ type CreateClassFormOutput = z.infer<typeof createClassStepSchema>;
 
 const Create = () => {
   const back = useBack();
-  const form = useForm<CreateClassFormInput, unknown, CreateClassFormOutput>({
+  const { refineCore: { onFinish, formLoading }, ...form } = useForm<
+    CreateClassFormOutput,
+    HttpError,
+    CreateClassFormOutput
+  >({
     resolver: zodResolver(createClassStepSchema),
     defaultValues: {
       name: "",
@@ -73,6 +74,18 @@ const Create = () => {
       bannerUrl: "",
       bannerCldPubId: "",
     },
+    refineCoreProps:{
+      resource:"classes",
+      action:"create",
+      onMutationSuccess:()=>{
+        toast.success("Class created successfully");
+        back();
+      },
+      onMutationError:(error)=>{
+        toast.error(error.message ?? "Failed to create class");
+      },
+    },
+    
   });
   const bannerPublicId=form.watch("bannerCldPubId");
   const setBannerImage = (
@@ -102,31 +115,17 @@ const {query:TeachersQuery}=useList({
     value:"teacher",
   }],
 });
-const teachers=TeachersQuery.data?.data??[]
+const teachers = (TeachersQuery.data?.data ?? []) as User[];
 const teacherIsLoading=TeachersQuery.isLoading;
 
 const {query:SubjectsQuery}=useList({
   resource:"subjects",
 });
-const subjects=SubjectsQuery.data?.data??[]
+const subjects = (SubjectsQuery.data?.data ?? []) as Subject[];
 const subjectIsLoading=SubjectsQuery.isLoading;
 
   function onSubmit(data: CreateClassFormOutput) {
-    console.log(data);
-    toast("You submitted the following values:", {
-      description: (
-        <pre className="mt-2 w-[320px] overflow-x-auto rounded-md bg-code p-4 text-code-foreground">
-          <code>{JSON.stringify(data, null, 2)}</code>
-        </pre>
-      ),
-      position: "bottom-right",
-      classNames: {
-        content: "flex flex-col gap-2",
-      },
-      style: {
-        "--border-radius": "calc(var(--radius)  + 4px)",
-      } as React.CSSProperties,
-    });
+    onFinish(data);
   }
 
 
@@ -342,14 +341,15 @@ const subjectIsLoading=SubjectsQuery.isLoading;
                             <SelectValue placeholder="Select a subject" />
                           </SelectTrigger>
                           <SelectContent className="max-h-72 min-w-[var(--radix-select-trigger-width)]">
-                            {subjects.map((subject:Subject) => (
+                            {subjects.map((subject:Subject)=>{
+                              return(
                               <SelectItem
                                 key={subject.id}
                                 value={String(subject.id)}
                               >
                                 {subject.name}
                               </SelectItem>
-                            ))}
+                            )})}
                           </SelectContent>
                         </Select>
                         {fieldState.invalid && (
@@ -392,11 +392,9 @@ const subjectIsLoading=SubjectsQuery.isLoading;
                           </SelectTrigger>
                           <SelectContent className="max-h-72 min-w-[var(--radix-select-trigger-width)]">
                           
-                            {teachers.map((teacher:User)=>{
-                              return(
-                                <SelectItem key={teacher.id} value={teacher.id}>{teacher.name}</SelectItem>
-                              )
-                            })}
+                            {teachers.map((teacher:User)=>(
+                              <SelectItem key={teacher.id} value={teacher.id}>{teacher.name}</SelectItem>
+                            ))}
                           </SelectContent>
                         </Select>
                         {fieldState.invalid && (
@@ -408,8 +406,13 @@ const subjectIsLoading=SubjectsQuery.isLoading;
                 </div>
               </FieldGroup>
             </form>
-            <Button className="mr-4"type="submit" form="rhf-create-class-form">
-            Submit
+            <Button
+              className="mr-4"
+              type="submit"
+              form="rhf-create-class-form"
+              disabled={formLoading}
+            >
+              {formLoading ? "Creating..." : "Submit"}
             </Button>
             <Button onClick={back}>Back</Button>
           </CardContent>
