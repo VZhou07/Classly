@@ -42,9 +42,7 @@ const buildHttpError = async (response: Response): Promise<HttpError> => {
 };
 
 const options: CreateDataProviderOptions = {
-
   getList: {
-
     getEndpoint: ({ resource }) => resource,
     mapResponse: async (response) => {
 
