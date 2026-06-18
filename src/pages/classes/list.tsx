@@ -1,5 +1,3 @@
-import { Class } from '@/types';
-import { ColumnDef } from '@tanstack/react-table';
 import React, { useMemo, useState } from 'react'
 import { Badge } from '@/components/ui/badge';
 import { useTable } from '@refinedev/react-table';
@@ -17,6 +15,7 @@ const ClassesList = () => {
   ]:[];
   const classTable=useTable({
     columns:useMemo(()=>[
+      {id:"banner",accessorKey:"bannerUrl",size:100,header:()=><p className="column-title">Banner</p>,cell:({getValue})=><img src={getValue<string>()} alt="Banner" width={100} height={100}/>},
       {id:"name",accessorKey:"name",size:200,header:()=><p className="column-title">Name</p>,cell:({getValue})=><span className="text-foreground"> {getValue<string>()}</span>,filterFn:"includesString"},
       {id:"subject",accessorKey:"subject.name",size:150,header:()=><p className="column-title">Subject</p>,cell:({getValue})=><Badge variant="secondary">{getValue<string>()}</Badge>},
       {id:"teacher",accessorKey:"teacher.name",size:150,header:()=><p className="column-title">Teacher</p>,cell:({getValue})=><Badge variant="secondary">{getValue<string>()}</Badge>},
