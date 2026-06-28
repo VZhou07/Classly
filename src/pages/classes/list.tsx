@@ -7,6 +7,7 @@ import { Breadcrumb } from '@/components/refine-ui/layout/breadcrumb';
 import { ListView } from '@/components/refine-ui/views/list-view';
 import { CreateButton } from '@/components/refine-ui/buttons/create';
 import { DataTable } from '@/components/refine-ui/data-table/data-table';
+import { ShowButton } from '@/components/refine-ui/buttons/show';
 
 const ClassesList = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -21,6 +22,7 @@ const ClassesList = () => {
       {id:"teacher",accessorKey:"teacher.name",size:150,header:()=><p className="column-title">Teacher</p>,cell:({getValue})=><Badge variant="secondary">{getValue<string>()}</Badge>},
       {id:"capacity",accessorKey:"capacity",size:100,header:()=><p className="column-title">Capacity</p>,cell:({getValue})=><Badge variant="secondary">{getValue<number>()}</Badge>},
       {id:"status",accessorKey:"status",size:100,header:()=><p className="column-title">Status</p>,cell:({getValue})=><Badge variant="secondary">{getValue<string>()}</Badge>},
+      {id:"details",size:140,header:()=><p className="column-title">Details</p>,cell:({row})=><ShowButton resource="classes" recordItemId={row.original.id}>View</ShowButton>}
     ],[]),
     refineCoreProps:{
       resource:"classes",

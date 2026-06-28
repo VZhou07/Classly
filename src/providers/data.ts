@@ -12,7 +12,7 @@ import type { CreateResponse, ListResponse } from "@/types";
 
 import type { HttpError } from "@refinedev/core";
 
-import type { UserRole } from "@/types";
+import type { UserRole, GetOneResponse } from "@/types";
 
 
 
@@ -91,6 +91,17 @@ const options: CreateDataProviderOptions = {
     },
     transformError: async (response) => buildHttpError(response),
   },
+
+  getOne:{
+    getEndpoint:({resource,id})=>`${resource}/${id}`,
+    mapResponse:async(response)=>{
+      if(!response.ok){
+        throw await buildHttpError(response);
+      }
+      const payload: GetOneResponse = await response.json();
+      return payload.data ?? {};
+    }
+  }
 };
 
 const { dataProvider } = createDataProvider(BACKEND_BASE_URL, options);
