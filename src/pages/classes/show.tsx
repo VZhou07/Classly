@@ -8,6 +8,7 @@ import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Separator } from '@/components/ui/separator';
 import { Button } from '@/components/ui/button';
+import { bannerPhoto } from '@/lib/cloudinary';
 
 function show() {
   const {query} = useShow({
@@ -27,14 +28,19 @@ function show() {
   const teacher_name=data.teacher?.name??"Unknown";
   const teacher_initials=teacher_name.split(" ").map((name:string)=>name[0]).join("");
   const place_holder_url=`https://placehold.co/600x400?text=${teacher_initials}`;
-
-
+  const bannerSrc = data.bannerCldPubId
+    ? bannerPhoto(data.bannerCldPubId,data.name).toURL()
+    : data.bannerUrl;
 
   return (
     <ShowView className="class-view class-show">
         <ShowViewHeader resource="classes" title={data?.name}></ShowViewHeader>
         <div className="banner">
-            {data.bannerUrl?<img src={data.bannerUrl} alt={data.name}/>:<div className="placeholder">{place_holder_url}</div>}
+            {bannerSrc ? (
+              <img src={bannerSrc} alt={`${data.name} banner`} />
+            ) : (
+              <div className="placeholder" aria-hidden="true" />
+            )}
         </div>
         <Card className="details-card">
             <div className="details-header">

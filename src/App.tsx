@@ -15,7 +15,7 @@ import { useNotificationProvider } from "./components/refine-ui/notification/use
 import { ThemeProvider } from "./components/refine-ui/theme/theme-provider";
 import { dataProvider } from "./providers/data";
 import Dashboard from "./pages/dashboard";
-import { Book, Home } from "lucide-react";
+import { Book, Home, School } from "lucide-react";
 import { Layout } from "./components/refine-ui/layout/layout";
 import SubjectsList from "./pages/subjects/list";
 import SubjectsCreate from "./pages/subjects/create";
@@ -35,6 +35,10 @@ function App() {
                 syncWithLocation: true,
                 warnWhenUnsavedChanges: true,
                 projectId: "TLmO5X-TTE5LM-TWaqVd",
+                title:{
+                  text:"Classroom Management App",
+                  icon:<School/>
+                }
               }}
               resources={[
                 {
