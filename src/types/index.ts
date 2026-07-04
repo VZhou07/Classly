@@ -112,6 +112,14 @@ export type ClassDetails = {
     inviteCode?: string;
 };
 
+export type Identity = {
+    id: string;
+    name: string;
+    email: string;
+    avatar?: string;
+    role?: "admin" | "teacher" | "student";
+};
+
 export type SignUpPayload = {
     email: string;
     name: string;
