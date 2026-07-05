@@ -44,12 +44,13 @@ const InviteCreateContent = () => {
   const { result: classesResult } = useList<ClassDetails>({
     resource: "classes",
     pagination: { pageSize: 100 },
-    queryOptions: { enabled: !isAdmin },
+    filters: identity?.id
+      ? [{ field: "teacherId", operator: "eq", value: identity.id }]
+      : [],
+    queryOptions: { enabled: !isAdmin && !!identity?.id },
   });
 
-  const myClasses = (classesResult?.data ?? []).filter(
-    (classItem: ClassDetails) => classItem.teacher?.id === identity?.id,
-  );
+  const myClasses = classesResult?.data ?? [];
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();

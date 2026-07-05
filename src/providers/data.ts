@@ -81,6 +81,8 @@ const options: CreateDataProviderOptions = {
           params.search = value;
         } else if (resource === "invites" && filter.field === "status") {
           params.status = value;
+        } else if (resource === "classes" && filter.field === "teacherId") {
+          params.teacherId = value;
         }
       });
       return params;
