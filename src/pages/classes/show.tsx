@@ -11,7 +11,7 @@ import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router';
 import { bannerPhoto } from '@/lib/cloudinary';
 
-function show() {
+function Show() {
   const navigate = useNavigate();
   const {query} = useShow({
     resource:"classes",
@@ -95,4 +95,4 @@ function show() {
   )
 }
 
-export default show
+export default Show
