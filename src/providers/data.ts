@@ -77,6 +77,10 @@ const options: CreateDataProviderOptions = {
           params.department = value;
         } else if (resource === "subjects" && filter.field === "name") {
           params.search = value;
+        } else if (resource === "invites" && filter.field === "email") {
+          params.search = value;
+        } else if (resource === "invites" && filter.field === "status") {
+          params.status = value;
         }
       });
       return params;
@@ -104,7 +108,9 @@ const options: CreateDataProviderOptions = {
   }
 };
 
-const { dataProvider } = createDataProvider(BACKEND_BASE_URL, options);
+const { dataProvider } = createDataProvider(BACKEND_BASE_URL, options, {
+  credentials: "include",
+});
 export { dataProvider };
 
 

@@ -120,6 +120,22 @@ export type Identity = {
     role?: "admin" | "teacher" | "student";
 };
 
+export type Invitation = {
+    id: number;
+    email: string;
+    role: "teacher" | "student";
+    status: "pending" | "accepted" | "expired" | "revoked";
+    expiresAt: string;
+    createdAt: string;
+    updatedAt: string;
+    className?: string | null;
+    invitedBy?: {
+        id: string;
+        name: string;
+        email: string;
+    } | null;
+};
+
 export type SignUpPayload = {
     email: string;
     name: string;

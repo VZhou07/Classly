@@ -29,6 +29,7 @@ import ForgotPassword from "./pages/forgot-password";
 import ResetPassword from "./pages/reset-password";
 import AcceptInvite from "./pages/accept-invite";
 import InviteCreate from "./pages/invites/create";
+import InvitesList from "./pages/invites/list";
 import JoinClass from "./pages/join-class";
 import { UserPlus, LogIn } from "lucide-react";
 
@@ -73,6 +74,7 @@ function App() {
                 },
                 {
                   name: "invites",
+                  list:"/invites",
                   create:"/invites/create",
                   meta:{label:"Invite people", icon:<UserPlus/>}
                 },
@@ -104,6 +106,7 @@ function App() {
                     <Route path="show/:id" element={<ClassesShow/>}/>
                   </Route>
                   <Route path="invites">
+                    <Route index element={<InvitesList/>}/>
                     <Route path="create" element={<InviteCreate/>}/>
                   </Route>
                   <Route path="join-class" element={<JoinClass/>}/>
