@@ -8,9 +8,11 @@ import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Separator } from '@/components/ui/separator';
 import { Button } from '@/components/ui/button';
+import { useNavigate } from 'react-router';
 import { bannerPhoto } from '@/lib/cloudinary';
 
-function show() {
+function Show() {
+  const navigate = useNavigate();
   const {query} = useShow({
     resource:"classes",
     id:useParams().id,
@@ -86,11 +88,11 @@ function show() {
                             <p>Enter the invite code</p>
                         </ol>
                 </div>
-                <Button size="lg" className="flex items-center gap-2 font-semibold">Join Class</Button>
+                <Button size="lg" className="flex items-center gap-2 font-semibold" onClick={()=>navigate("/join-class")}>Join Class</Button>
             </div>
         </Card>
     </ShowView>
   )
 }
 
-export default show
+export default Show
