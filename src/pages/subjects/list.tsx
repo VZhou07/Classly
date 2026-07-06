@@ -6,14 +6,16 @@ import { Badge } from '@/components/ui/badge'
 import { Input } from '@/components/ui/input'
 import { SelectValue,SelectContent,Select,SelectTrigger,SelectItem } from '@/components/ui/select'
 import { DEPARTMENT_OPTIONS } from '@/constants'
-import { Subject } from '@/types'
+import { canCreateResource } from '@/lib/access'
+import { Subject, Identity } from '@/types'
+import { useGetIdentity } from '@refinedev/core'
 import { useTable } from '@refinedev/react-table'
 import { ColumnDef } from '@tanstack/react-table'
 import { Search } from 'lucide-react'
 import React, { useMemo, useState } from 'react'
 
 const SubjectsList = ()=>{
-
+  const { data: identity } = useGetIdentity<Identity>();
   const [searchQuery, setSearchQuery] = useState("")
   const [selectedDepartment,setSelectedDepartment] = useState("all")
 
@@ -102,7 +104,7 @@ const SubjectsList = ()=>{
                 ))}
               </SelectContent>
             </Select>
-            <CreateButton/>
+            {canCreateResource("subjects", identity?.role) && <CreateButton />}
           </div>
         </div>
       </div>

@@ -1,5 +1,5 @@
 import React from 'react'
-import { useShow } from '@refinedev/core';
+import { useShow, useGetIdentity } from '@refinedev/core';
 import { useParams } from 'react-router';
 import { ShowView } from '@/components/refine-ui/views/show-view';
 import { ShowViewHeader } from '@/components/refine-ui/views/show-view';
@@ -10,9 +10,11 @@ import { Separator } from '@/components/ui/separator';
 import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router';
 import { bannerPhoto } from '@/lib/cloudinary';
+import type { Identity } from '@/types';
 
 function Show() {
   const navigate = useNavigate();
+  const { data: identity } = useGetIdentity<Identity>();
   const {query} = useShow({
     resource:"classes",
     id:useParams().id,
@@ -82,13 +84,17 @@ function Show() {
                     </div>
                 </div>
                 <Separator className="col-span-full" />
-                <div className="join">
-                    <h2>Join the class</h2>
-                        <ol>
-                            <p>Enter the invite code</p>
-                        </ol>
-                </div>
-                <Button size="lg" className="flex items-center gap-2 font-semibold" onClick={()=>navigate("/join-class")}>Join Class</Button>
+                {identity?.role === "student" && (
+                  <>
+                    <div className="join">
+                        <h2>Join the class</h2>
+                            <ol>
+                                <p>Enter the invite code</p>
+                            </ol>
+                    </div>
+                    <Button size="lg" className="flex items-center gap-2 font-semibold" onClick={()=>navigate("/join-class")}>Join Class</Button>
+                  </>
+                )}
             </div>
         </Card>
     </ShowView>

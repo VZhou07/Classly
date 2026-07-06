@@ -1,5 +1,6 @@
 import React, { useMemo, useState } from 'react'
 import { Badge } from '@/components/ui/badge';
+import { useGetIdentity } from '@refinedev/core';
 import { useTable } from '@refinedev/react-table';
 import { Search } from 'lucide-react';
 import { Input } from '@/components/ui/input';
@@ -8,8 +9,11 @@ import { ListView } from '@/components/refine-ui/views/list-view';
 import { CreateButton } from '@/components/refine-ui/buttons/create';
 import { DataTable } from '@/components/refine-ui/data-table/data-table';
 import { ShowButton } from '@/components/refine-ui/buttons/show';
+import { canCreateResource } from '@/lib/access';
+import type { Identity } from '@/types';
 
 const ClassesList = () => {
+  const { data: identity } = useGetIdentity<Identity>();
   const [searchQuery, setSearchQuery] = useState("");
   const searchFilters=searchQuery?[
     {field:"name",operator:"contains" as const, value:searchQuery}
@@ -50,7 +54,7 @@ const ClassesList = () => {
               onChange={(e)=>setSearchQuery(e.target.value)}/>
           </div>
           <div className='flex gap-2 w-full sm:w-auto'>
-            <CreateButton/>
+            {canCreateResource("classes", identity?.role) && <CreateButton />}
           </div>
         </div>
       </div>

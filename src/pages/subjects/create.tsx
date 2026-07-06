@@ -1,4 +1,5 @@
 import React from 'react'
+import { RequireRole } from '@/components/require-role';
 
 const SubjectsCreate =()=>{
   return (
@@ -6,4 +7,10 @@ const SubjectsCreate =()=>{
   )
 }
 
-export default SubjectsCreate
+const SubjectsCreatePage = () => (
+  <RequireRole roles={["admin"]}>
+    <SubjectsCreate />
+  </RequireRole>
+);
+
+export default SubjectsCreatePage
