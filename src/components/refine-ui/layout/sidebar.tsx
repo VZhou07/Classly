@@ -23,16 +23,25 @@ import {
 import { cn } from "@/lib/utils";
 import {
   useLink,
+  useGetIdentity,
   useMenu,
   useRefineOptions,
   type TreeMenuItem,
 } from "@refinedev/core";
 import { ChevronRight, ListIcon } from "lucide-react";
-import React from "react";
+import React, { useMemo } from "react";
+import type { Identity } from "@/types";
+import { canSeeNavItem } from "@/lib/access";
 
 export function Sidebar() {
   const { open } = useShadcnSidebar();
   const { menuItems, selectedKey } = useMenu();
+  const { data: identity } = useGetIdentity<Identity>();
+
+  const visibleMenuItems = useMemo(
+    () => menuItems.filter((item) => canSeeNavItem(item.name, identity?.role)),
+    [menuItems, identity?.role],
+  );
 
   return (
     <ShadcnSidebar collapsible="icon" className={cn("border-none")}>
@@ -55,7 +64,7 @@ export function Sidebar() {
           }
         )}
       >
-        {menuItems.map((item: TreeMenuItem) => (
+        {visibleMenuItems.map((item: TreeMenuItem) => (
           <SidebarItem
             key={item.key || item.name}
             item={item}

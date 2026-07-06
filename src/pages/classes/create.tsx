@@ -33,6 +33,7 @@ import type { ColumnDef } from "@tanstack/react-table";
 import { useMemo } from "react";
 import type { User } from "@/types";
 import { DataTable } from "@/components/refine-ui/data-table/data-table";
+import { RequireRole } from "@/components/require-role";
 import { useState } from "react";
 import { useEffect } from "react";
 import { useList } from "@refinedev/core";
@@ -422,4 +423,10 @@ const subjectIsLoading=SubjectsQuery.isLoading;
   );
 };
 
-export default Create;
+const ClassesCreatePage = () => (
+  <RequireRole roles={["admin"]}>
+    <Create />
+  </RequireRole>
+);
+
+export default ClassesCreatePage;
