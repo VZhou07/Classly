@@ -87,11 +87,13 @@ export const ShowViewHeader = ({
             recordItemId={recordItemId}
             resource={resourceName}
           />
+          {/*
           <EditButton
             variant="outline"
             recordItemId={recordItemId}
             resource={resourceName}
           />
+          */}
         </div>
       </div>
     </div>

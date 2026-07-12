@@ -85,8 +85,16 @@ export type User = {
 
 export type Schedule = {
     day: string;
-    startTime: string;
-    endTime: string;
+    start?: string;
+    end?: string;
+    startTime?: string;
+    endTime?: string;
+};
+
+export type ClassScheduleSlot = {
+    day: string;
+    start: string;
+    end: string;
 };
 
 export type Department = {
@@ -134,6 +142,41 @@ export type Invitation = {
         name: string;
         email: string;
     } | null;
+};
+
+export type GradeItem = {
+    id: number;
+    classId: number;
+    name: string;
+    weight: number;
+};
+
+export type StudentGrade = {
+    id: number;
+    gradeItemId: number;
+    studentId: string;
+    score: number;
+    published: boolean;
+    student?: { id: string; name: string; email: string };
+};
+
+export type GradeBreakdown = {
+    classId: number;
+    className: string;
+    items: GradeItem[];
+    grades: StudentGrade[];
+    overallGrade: number | null;
+};
+
+export type ClassListItem = ClassDetails & {
+    enrollmentCount?: number;
+    subject?: Subject & { name?: string };
+};
+
+export type EnrolledStudent = {
+    studentId: string;
+    name: string;
+    email: string;
 };
 
 export type SignUpPayload = {

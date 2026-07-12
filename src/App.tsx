@@ -18,7 +18,12 @@ import { ThemeProvider } from "./components/refine-ui/theme/theme-provider";
 import { dataProvider } from "./providers/data";
 import { authProvider } from "./providers/auth";
 import Dashboard from "./pages/dashboard";
-import { Book, Home, School } from "lucide-react";
+import GradesList from "./pages/grades/list";
+import GradesShow from "./pages/grades/show";
+import GradesManage from "./pages/grades/manage";
+import AdminClassGrades from "./pages/grades/admin-class";
+import AdminStudentGrades from "./pages/grades/admin-student";
+import { Book, Home, School, ClipboardList } from "lucide-react";
 import { Layout } from "./components/refine-ui/layout/layout";
 import SubjectsList from "./pages/subjects/list";
 import SubjectsCreate from "./pages/subjects/create";
@@ -73,6 +78,12 @@ function App() {
                   meta:{label:"Classes", icon:<GraduationCap/>}
                 },
                 {
+                  name: "grades",
+                  list: "/grades",
+                  show: "/grades/:classId",
+                  meta: { label: "Grades", icon: <ClipboardList /> },
+                },
+                {
                   name: "invites",
                   list:"/invites",
                   create:"/invites/create",
@@ -104,6 +115,13 @@ function App() {
                     <Route index element={<ClassesList/>}/>
                     <Route path="create" element={<ClassesCreate/>}/>
                     <Route path="show/:id" element={<ClassesShow/>}/>
+                    <Route path="show/:id/grades" element={<GradesManage/>}/>
+                  </Route>
+                  <Route path="grades">
+                    <Route index element={<GradesList/>}/>
+                    <Route path="class/:classId" element={<AdminClassGrades/>}/>
+                    <Route path="class/:classId/student/:studentId" element={<AdminStudentGrades/>}/>
+                    <Route path=":classId" element={<GradesShow/>}/>
                   </Route>
                   <Route path="invites">
                     <Route index element={<InvitesList/>}/>
