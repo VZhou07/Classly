@@ -58,7 +58,8 @@ function GradebookContent() {
 
   const isOwner =
     identity?.role === "teacher" &&
-    classData?.teacher?.id === identity.id;
+    (classData?.teacherId === identity.id ||
+      classData?.teacher?.id === identity.id);
 
   const loadData = useCallback(async () => {
     if (isNaN(classId)) return;
@@ -84,8 +85,13 @@ function GradebookContent() {
   }, [classId, open]);
 
   useEffect(() => {
-    if (isOwner) loadData();
-  }, [isOwner, loadData]);
+    if (classQuery.isLoading || !identity) return;
+    if (!isOwner) {
+      setLoading(false);
+      return;
+    }
+    loadData();
+  }, [isOwner, loadData, classQuery.isLoading, identity]);
 
   const totalWeight = useMemo(
     () => items.reduce((sum, i) => sum + i.weight, 0),

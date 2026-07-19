@@ -137,6 +137,81 @@ function AdminGradesClassList() {
   );
 }
 
+function TeacherGradesClassList() {
+  const Link = useLink();
+  const { data: identity } = useGetIdentity<Identity>();
+
+  const classTable = useTable({
+    columns: useMemo(
+      () => [
+        {
+          id: "name",
+          accessorKey: "name",
+          header: () => <p className="column-title">Class</p>,
+          cell: ({ getValue }) => (
+            <span className="font-medium">{getValue<string>()}</span>
+          ),
+        },
+        {
+          id: "subject",
+          accessorKey: "subject.name",
+          header: () => <p className="column-title">Subject</p>,
+          cell: ({ getValue }) => (
+            <Badge variant="secondary">{getValue<string>()}</Badge>
+          ),
+        },
+        {
+          id: "enrollmentCount",
+          accessorKey: "enrollmentCount",
+          header: () => <p className="column-title">Students</p>,
+          cell: ({ getValue }) => getValue<number>() ?? "—",
+        },
+        {
+          id: "action",
+          header: () => <p className="column-title">Action</p>,
+          cell: ({ row }) => (
+            <Button variant="outline" size="sm" asChild>
+              <Link to={`/classes/show/${row.original.id}/grades`}>
+                Manage grades
+              </Link>
+            </Button>
+          ),
+        },
+      ],
+      [Link],
+    ),
+    refineCoreProps: {
+      resource: "classes",
+      pagination: { pageSize: 10, mode: "server" },
+      filters: {
+        permanent: [
+          {
+            field: "teacherId",
+            operator: "eq",
+            value: identity?.id,
+          },
+          {
+            field: "includeEnrollmentCount",
+            operator: "eq",
+            value: "true",
+          },
+        ],
+      },
+      queryOptions: { enabled: !!identity?.id },
+    },
+  });
+
+  return (
+    <>
+      <h1 className="page-title">Class grades</h1>
+      <p className="text-muted-foreground mb-6">
+        Open a class gradebook to add assignments and publish scores.
+      </p>
+      <DataTable table={classTable} />
+    </>
+  );
+}
+
 function GradesListContent() {
   const { data: identity, isLoading } = useGetIdentity<Identity>();
 
@@ -151,6 +226,8 @@ function GradesListContent() {
       <Breadcrumb />
       {identity?.role === "admin" ? (
         <AdminGradesClassList />
+      ) : identity?.role === "teacher" ? (
+        <TeacherGradesClassList />
       ) : (
         <StudentGradesList />
       )}
@@ -160,7 +237,7 @@ function GradesListContent() {
 
 export default function GradesList() {
   return (
-    <RequireRole roles={["student", "admin"]}>
+    <RequireRole roles={["student", "teacher", "admin"]}>
       <GradesListContent />
     </RequireRole>
   );
