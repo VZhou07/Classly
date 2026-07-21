@@ -83,6 +83,7 @@ export type User = {
     department?: string;
 };
 
+/** Raw schedule from API/forms — times may use start/end or startTime/endTime. */
 export type Schedule = {
     day: string;
     start?: string;
@@ -91,11 +92,20 @@ export type Schedule = {
     endTime?: string;
 };
 
+/** Normalized schedule for UI (ClassCard, etc.) — start/end always defined. */
 export type ClassScheduleSlot = {
     day: string;
     start: string;
     end: string;
 };
+
+export function toClassScheduleSlot(schedule: Schedule): ClassScheduleSlot {
+    return {
+        day: schedule.day,
+        start: schedule.start ?? schedule.startTime ?? "",
+        end: schedule.end ?? schedule.endTime ?? "",
+    };
+}
 
 export type Department = {
     id: number;

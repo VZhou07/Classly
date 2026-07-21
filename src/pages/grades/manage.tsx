@@ -127,8 +127,11 @@ function GradebookContent() {
 
   const handleAddItem = async () => {
     const weight = Number(newItemWeight);
-    if (!newItemName.trim() || isNaN(weight)) {
-      open?.({ type: "error", message: "Enter a name and valid weight" });
+    if (!newItemName.trim() || isNaN(weight) || weight < 0 || weight > 100) {
+      open?.({
+        type: "error",
+        message: "Enter a name and a weight between 0 and 100",
+      });
       return;
     }
     try {
@@ -169,17 +172,38 @@ function GradebookContent() {
     if (!selectedItemId) return;
     setSaving(true);
     try {
-      const updates = students.map((student) => {
-        const draft = getDraft(selectedItemId, student.studentId);
-        return {
-          gradeItemId: selectedItemId,
-          studentId: student.studentId,
-          score: Number(draft.score) || 0,
-          published: draft.published,
-        };
-      });
+      const prefix = `${selectedItemId}-`;
+      const updates = students
+        .filter((student) => drafts[draftKey(selectedItemId, student.studentId)])
+        .map((student) => {
+          const draft = drafts[draftKey(selectedItemId, student.studentId)]!;
+          return {
+            gradeItemId: selectedItemId,
+            studentId: student.studentId,
+            score: Number(draft.score) || 0,
+            published: draft.published,
+          };
+        });
+
+      if (updates.length === 0) {
+        open?.({ type: "error", message: "No grade changes to save" });
+        return;
+      }
+
+      if (updates.some((u) => u.score < 0 || u.score > 100)) {
+        open?.({
+          type: "error",
+          message: "Scores must be between 0 and 100",
+        });
+        return;
+      }
+
       await saveClassGrades(classId, updates);
-      setDrafts({});
+      setDrafts((prev) =>
+        Object.fromEntries(
+          Object.entries(prev).filter(([key]) => !key.startsWith(prefix)),
+        ),
+      );
       await loadData();
       open?.({ type: "success", message: "Grades saved" });
     } catch (e) {

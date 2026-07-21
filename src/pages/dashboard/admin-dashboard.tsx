@@ -25,6 +25,7 @@ export function AdminDashboard() {
     subjectCount: number;
     pendingInviteCount: number;
   } | null>(null);
+  const [summaryError, setSummaryError] = useState<string | null>(null);
 
   const { query: invitesQuery } = useList<Invitation>({
     resource: "invites",
@@ -36,9 +37,19 @@ export function AdminDashboard() {
       .then((data) => {
         if ("userCounts" in data) {
           setSummary(data);
+          setSummaryError(null);
+        } else {
+          setSummary(null);
+          setSummaryError("Failed to load dashboard summary");
         }
       })
-      .catch(console.error);
+      .catch((e) => {
+        console.error(e);
+        setSummary(null);
+        setSummaryError(
+          e instanceof Error ? e.message : "Failed to load dashboard summary",
+        );
+      });
   }, []);
 
   const recentInvites = invitesQuery.data?.data ?? [];
@@ -47,6 +58,10 @@ export function AdminDashboard() {
     <ListView>
       <Breadcrumb />
       <h1 className="page-title">Admin dashboard</h1>
+
+      {summaryError && (
+        <p className="text-destructive mb-4">{summaryError}</p>
+      )}
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 mb-8">
         <StatCard

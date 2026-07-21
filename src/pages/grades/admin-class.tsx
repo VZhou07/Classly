@@ -54,10 +54,16 @@ function AdminClassGradesContent() {
     );
   }
 
-  if (error) {
+  if (error || classQuery.isError) {
+    const classErrorMessage =
+      (classQuery.error as { message?: string } | null)?.message ??
+      "Failed to load class";
+
     return (
       <ListView>
-        <p className="text-destructive py-12 text-center">{error}</p>
+        <p className="text-destructive py-12 text-center">
+          {error ?? classErrorMessage}
+        </p>
       </ListView>
     );
   }

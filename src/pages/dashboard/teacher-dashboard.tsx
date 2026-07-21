@@ -7,7 +7,12 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Breadcrumb } from "@/components/refine-ui/layout/breadcrumb";
 import { ListView } from "@/components/refine-ui/views/list-view";
 import { fetchDashboardSummary } from "@/lib/api";
-import type { ClassListItem, Identity, Invitation } from "@/types";
+import {
+  toClassScheduleSlot,
+  type ClassListItem,
+  type Identity,
+  type Invitation,
+} from "@/types";
 import { StatCard } from "./components/stat-card";
 import { ClassCard } from "./components/class-card";
 
@@ -69,7 +74,10 @@ export function TeacherDashboard() {
         />
         <StatCard
           title="Total students"
-          value={summary?.totalStudents ?? 0}
+          value={
+            summary?.totalStudents ??
+            classes.reduce((sum, c) => sum + (c.enrollmentCount ?? 0), 0)
+          }
           icon={Users}
         />
         <StatCard
@@ -108,7 +116,7 @@ export function TeacherDashboard() {
                   subjectName={c.subject?.name}
                   enrollmentCount={c.enrollmentCount}
                   capacity={c.capacity}
-                  schedules={c.schedules as { day: string; start: string; end: string }[]}
+                  schedules={(c.schedules ?? []).map(toClassScheduleSlot)}
                 />
                 <Button variant="secondary" size="sm" asChild>
                   <Link to={`/classes/show/${c.id}/grades`}>Manage grades</Link>

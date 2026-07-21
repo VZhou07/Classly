@@ -5,7 +5,7 @@ import { RequireRole } from "@/components/require-role";
 import { Breadcrumb } from "@/components/refine-ui/layout/breadcrumb";
 import { ListView } from "@/components/refine-ui/views/list-view";
 import { Button } from "@/components/ui/button";
-import { fetchClassGrades } from "@/lib/api";
+import { fetchClassEnrollments, fetchClassGrades } from "@/lib/api";
 import type { GradeBreakdown } from "@/types";
 import { GradeBreakdownTable } from "./components/grade-breakdown-table";
 
@@ -14,6 +14,7 @@ function AdminStudentGradesContent() {
   const id = Number(classId);
   const Link = useLink();
   const [breakdown, setBreakdown] = useState<GradeBreakdown | null>(null);
+  const [studentName, setStudentName] = useState("Student");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -24,8 +25,16 @@ function AdminStudentGradesContent() {
       return;
     }
 
-    fetchClassGrades(id, studentId)
-      .then(setBreakdown)
+    Promise.all([fetchClassGrades(id, studentId), fetchClassEnrollments(id)])
+      .then(([gradeData, enrollments]) => {
+        setBreakdown(gradeData);
+        const enrolled = enrollments.find((s) => s.studentId === studentId);
+        setStudentName(
+          enrolled?.name ??
+            gradeData.grades[0]?.student?.name ??
+            "Student",
+        );
+      })
       .catch((e) =>
         setError(e instanceof Error ? e.message : "Failed to load grades"),
       )
@@ -49,9 +58,6 @@ function AdminStudentGradesContent() {
       </ListView>
     );
   }
-
-  const studentName =
-    breakdown.grades[0]?.student?.name ?? "Student";
 
   return (
     <ListView>

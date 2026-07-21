@@ -6,11 +6,11 @@ async function apiFetch<T>(
 ): Promise<T> {
   const response = await fetch(`${BACKEND_BASE_URL}${path}`, {
     credentials: "include",
+    ...options,
     headers: {
       "Content-Type": "application/json",
       ...options.headers,
     },
-    ...options,
   });
 
   if (!response.ok) {

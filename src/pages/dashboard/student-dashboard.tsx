@@ -7,7 +7,7 @@ import { Breadcrumb } from "@/components/refine-ui/layout/breadcrumb";
 import { ListView } from "@/components/refine-ui/views/list-view";
 import { fetchDashboardSummary } from "@/lib/api";
 import { formatGrade } from "@/lib/grades";
-import type { ClassListItem, Identity } from "@/types";
+import { toClassScheduleSlot, type ClassListItem, type Identity } from "@/types";
 import { StatCard } from "./components/stat-card";
 import { ClassCard } from "./components/class-card";
 
@@ -22,6 +22,8 @@ export function StudentDashboard() {
       overallGrade: number | null;
     }>;
   } | null>(null);
+  const [summaryLoading, setSummaryLoading] = useState(true);
+  const [summaryError, setSummaryError] = useState<string | null>(null);
 
   const { query: classesQuery } = useList<ClassListItem>({
     resource: "classes",
@@ -33,13 +35,25 @@ export function StudentDashboard() {
   });
 
   useEffect(() => {
+    setSummaryLoading(true);
     fetchDashboardSummary()
       .then((data) => {
         if ("enrolledClassCount" in data) {
           setSummary(data);
+          setSummaryError(null);
+        } else {
+          setSummary(null);
+          setSummaryError("Failed to load dashboard summary");
         }
       })
-      .catch(console.error);
+      .catch((e) => {
+        console.error(e);
+        setSummary(null);
+        setSummaryError(
+          e instanceof Error ? e.message : "Failed to load dashboard summary",
+        );
+      })
+      .finally(() => setSummaryLoading(false));
   }, []);
 
   const classes = classesQuery.data?.data ?? [];
@@ -112,7 +126,7 @@ export function StudentDashboard() {
                 name={c.name}
                 subjectName={c.subject?.name}
                 teacherName={c.teacher?.name}
-                schedules={c.schedules as { day: string; start: string; end: string }[]}
+                schedules={(c.schedules ?? []).map(toClassScheduleSlot)}
               />
             ))}
           </div>
@@ -153,7 +167,15 @@ export function StudentDashboard() {
             <Link to="/grades">View all grades</Link>
           </Button>
         </div>
-        {!summary?.gradesSummary.length ? (
+        {summaryLoading ? (
+          <p className="text-muted-foreground">Loading grades...</p>
+        ) : summaryError ? (
+          <Card>
+            <CardContent className="py-6 text-destructive text-center">
+              {summaryError}
+            </CardContent>
+          </Card>
+        ) : !summary?.gradesSummary.length ? (
           <Card>
             <CardContent className="py-6 text-muted-foreground text-center">
               No published grades yet.
