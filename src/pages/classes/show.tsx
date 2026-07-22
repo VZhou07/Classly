@@ -95,6 +95,28 @@ function Show() {
                     <Button size="lg" className="flex items-center gap-2 font-semibold" onClick={()=>navigate("/join-class")}>Join Class</Button>
                   </>
                 )}
+                {identity?.role === "teacher" &&
+                  (data.teacherId === identity.id ||
+                    data.teacher?.id === identity.id) && (
+                  <Button
+                    size="lg"
+                    variant="secondary"
+                    className="flex items-center gap-2 font-semibold"
+                    onClick={() => navigate(`/classes/show/${data.id}/grades`)}
+                  >
+                    Manage Grades
+                  </Button>
+                )}
+                {identity?.role === "admin" && (
+                  <Button
+                    size="lg"
+                    variant="secondary"
+                    className="flex items-center gap-2 font-semibold"
+                    onClick={() => navigate(`/grades/class/${data.id}`)}
+                  >
+                    View grades
+                  </Button>
+                )}
             </div>
         </Card>
     </ShowView>

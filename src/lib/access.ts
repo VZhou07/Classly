@@ -8,6 +8,8 @@ export function canSeeNavItem(resource: string, role?: AppRole): boolean {
       return role === "admin" || role === "teacher";
     case "join-class":
       return role === "student";
+    case "grades":
+      return role === "student" || role === "teacher" || role === "admin";
     default:
       return true;
   }

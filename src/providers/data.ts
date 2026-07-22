@@ -64,12 +64,14 @@ const options: CreateDataProviderOptions = {
       const pageSize = pagination?.pageSize ?? 10;
       const role = filters?.find(
         (filter) => "field" in filter && filter.field === "role",
-      )?.value as UserRole;
+      )?.value as UserRole | undefined;
       const params: Record<string, string> = {
         page: String(page),
         limit: String(pageSize),
-        role: role,
       };
+      if (role) {
+        params.role = role;
+      }
       filters?.forEach((filter) => {
         if (!("field" in filter)) return;
         const value = String(filter.value);
@@ -83,6 +85,13 @@ const options: CreateDataProviderOptions = {
           params.status = value;
         } else if (resource === "classes" && filter.field === "teacherId") {
           params.teacherId = value;
+        } else if (resource === "classes" && filter.field === "studentId") {
+          params.studentId = value;
+        } else if (
+          resource === "classes" &&
+          filter.field === "includeEnrollmentCount"
+        ) {
+          params.includeEnrollmentCount = value;
         }
       });
       return params;
@@ -107,7 +116,20 @@ const options: CreateDataProviderOptions = {
       const payload: GetOneResponse = await response.json();
       return payload.data ?? {};
     }
-  }
+  },
+
+  update: {
+    getEndpoint: ({ resource, id }) => `${resource}/${id}`,
+    buildBodyParams: async ({ variables }) => variables,
+    mapResponse: async (response) => {
+      if (!response.ok) {
+        throw await buildHttpError(response);
+      }
+      const payload: GetOneResponse = await response.json();
+      return payload.data ?? {};
+    },
+    transformError: async (response) => buildHttpError(response),
+  },
 };
 
 const { dataProvider } = createDataProvider(BACKEND_BASE_URL, options, {
