@@ -56,7 +56,7 @@ function GradesShowContent() {
           <h1 className="page-title">{breakdown.className}</h1>
           <p className="text-muted-foreground">Grade breakdown</p>
         </div>
-        <Button variant="outline" asChild>
+        <Button asChild>
           <Link to="/grades">Back to grades</Link>
         </Button>
       </div>

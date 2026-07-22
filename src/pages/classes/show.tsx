@@ -100,8 +100,7 @@ function Show() {
                     data.teacher?.id === identity.id) && (
                   <Button
                     size="lg"
-                    variant="secondary"
-                    className="flex items-center gap-2 font-semibold"
+                    className="flex items-center gap-2 font-semibold bg-primary text-primary-foreground hover:bg-primary/90"
                     onClick={() => navigate(`/classes/show/${data.id}/grades`)}
                   >
                     Manage Grades
@@ -110,8 +109,7 @@ function Show() {
                 {identity?.role === "admin" && (
                   <Button
                     size="lg"
-                    variant="secondary"
-                    className="flex items-center gap-2 font-semibold"
+                    className="flex items-center gap-2 font-semibold bg-primary text-primary-foreground hover:bg-primary/90"
                     onClick={() => navigate(`/grades/class/${data.id}`)}
                   >
                     View grades

@@ -76,7 +76,7 @@ function AdminClassGradesContent() {
           <h1 className="page-title">{classData?.name ?? "Class"}</h1>
           <p className="text-muted-foreground">Select a student to view grades</p>
         </div>
-        <Button variant="outline" asChild>
+        <Button asChild>
           <Link to="/grades">Back to classes</Link>
         </Button>
       </div>
@@ -104,7 +104,7 @@ function AdminClassGradesContent() {
                     <TableCell className="font-medium">{student.name}</TableCell>
                     <TableCell>{student.email}</TableCell>
                     <TableCell className="text-right">
-                      <Button variant="outline" size="sm" asChild>
+                      <Button size="sm" asChild>
                         <Link
                           to={`/grades/class/${id}/student/${student.studentId}`}
                         >

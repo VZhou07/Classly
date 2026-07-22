@@ -163,7 +163,7 @@ export function StudentDashboard() {
       <section>
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-xl font-semibold">Grades at a glance</h2>
-          <Button variant="outline" size="sm" asChild>
+          <Button size="sm" asChild>
             <Link to="/grades">View all grades</Link>
           </Button>
         </div>
@@ -192,7 +192,7 @@ export function StudentDashboard() {
                       Overall: {formatGrade(g.overallGrade)}
                     </p>
                   </div>
-                  <Button variant="ghost" size="sm" asChild>
+                  <Button size="sm" asChild>
                     <Link to={`/grades/${g.classId}`}>Breakdown</Link>
                   </Button>
                 </CardContent>

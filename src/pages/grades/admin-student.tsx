@@ -69,7 +69,7 @@ function AdminStudentGradesContent() {
             {breakdown.className} — grade breakdown (read-only)
           </p>
         </div>
-        <Button variant="outline" asChild>
+        <Button asChild>
           <Link to={`/grades/class/${id}`}>Back to students</Link>
         </Button>
       </div>

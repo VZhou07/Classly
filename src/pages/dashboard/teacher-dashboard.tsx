@@ -118,7 +118,11 @@ export function TeacherDashboard() {
                   capacity={c.capacity}
                   schedules={(c.schedules ?? []).map(toClassScheduleSlot)}
                 />
-                <Button variant="secondary" size="sm" asChild>
+                <Button
+                  size="sm"
+                  className="w-full bg-primary text-primary-foreground hover:bg-primary/90"
+                  asChild
+                >
                   <Link to={`/classes/show/${c.id}/grades`}>Manage grades</Link>
                 </Button>
               </div>
@@ -130,7 +134,11 @@ export function TeacherDashboard() {
       <section>
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-xl font-semibold">Recent pending invites</h2>
-          <Button variant="outline" size="sm" asChild>
+          <Button
+            size="sm"
+            className="bg-primary text-primary-foreground hover:bg-primary/90"
+            asChild
+          >
             <Link to="/invites">View all</Link>
           </Button>
         </div>

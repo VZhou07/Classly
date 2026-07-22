@@ -246,7 +246,7 @@ function GradebookContent() {
             Define assignments and publish grades per student.
           </p>
         </div>
-        <Button variant="outline" asChild>
+        <Button asChild>
           <Link to={`/classes/show/${classId}`}>Back to class</Link>
         </Button>
       </div>
@@ -307,7 +307,7 @@ function GradebookContent() {
                       </span>
                     </button>
                     <Button
-                      variant="ghost"
+                      variant="destructive"
                       size="sm"
                       onClick={() => handleDeleteItem(item.id)}
                     >

@@ -53,7 +53,7 @@ function StudentGradesList() {
                     Overall: {formatGrade(g.overallGrade)}
                   </p>
                 </div>
-                <Button variant="outline" asChild>
+                <Button asChild>
                   <Link to={`/grades/${g.classId}`}>View breakdown</Link>
                 </Button>
               </CardContent>
@@ -103,7 +103,7 @@ function AdminGradesClassList() {
           id: "action",
           header: () => <p className="column-title">Action</p>,
           cell: ({ row }) => (
-            <Button variant="outline" size="sm" asChild>
+            <Button size="sm" asChild>
               <Link to={`/grades/class/${row.original.id}`}>View students</Link>
             </Button>
           ),
@@ -170,7 +170,7 @@ function TeacherGradesClassList() {
           id: "action",
           header: () => <p className="column-title">Action</p>,
           cell: ({ row }) => (
-            <Button variant="outline" size="sm" asChild>
+            <Button size="sm" asChild>
               <Link to={`/classes/show/${row.original.id}/grades`}>
                 Manage grades
               </Link>

@@ -58,7 +58,11 @@ export function ClassCard({
             </ul>
           </div>
         )}
-        <Button variant="outline" size="sm" className="w-fit" asChild>
+        <Button
+          size="sm"
+          className="w-fit bg-primary text-primary-foreground hover:bg-primary/90"
+          asChild
+        >
           <Link to={`/classes/show/${id}`}>View class</Link>
         </Button>
       </CardContent>

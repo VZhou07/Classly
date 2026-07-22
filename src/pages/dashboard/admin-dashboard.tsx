@@ -90,16 +90,16 @@ export function AdminDashboard() {
         <Button asChild>
           <Link to="/subjects/create">Create subject</Link>
         </Button>
-        <Button asChild variant="secondary">
+        <Button asChild>
           <Link to="/classes/create">Create class</Link>
         </Button>
-        <Button asChild variant="outline">
+        <Button asChild>
           <Link to="/invites/create">
             <UserPlus className="mr-2 h-4 w-4" />
             Invite teacher
           </Link>
         </Button>
-        <Button asChild variant="outline">
+        <Button asChild>
           <Link to="/grades">
             <ClipboardList className="mr-2 h-4 w-4" />
             View student grades
@@ -116,7 +116,7 @@ export function AdminDashboard() {
       <section>
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-xl font-semibold">Recent invites</h2>
-          <Button variant="outline" size="sm" asChild>
+          <Button size="sm" asChild>
             <Link to="/invites">View all</Link>
           </Button>
         </div>
