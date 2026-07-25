@@ -2,12 +2,17 @@ import type { AuthProvider } from "@refinedev/core";
 import { authClient } from "@/lib/auth-client";
 import type { Identity } from "@/types";
 
+/** Absolute frontend URL for OAuth / email redirects (not the API host). */
+const frontendOrigin =
+  typeof window !== "undefined" ? window.location.origin : "";
+
 export const authProvider: AuthProvider = {
   login: async ({ email, password, providerName }) => {
     if (providerName) {
       const { error } = await authClient.signIn.social({
         provider: providerName,
-        callbackURL: "/",
+        callbackURL: `${frontendOrigin}/`,
+        errorCallbackURL: `${frontendOrigin}/auth/error`,
       });
 
       if (error) {
@@ -36,7 +41,8 @@ export const authProvider: AuthProvider = {
     if (providerName) {
       const { error } = await authClient.signIn.social({
         provider: providerName,
-        callbackURL: "/",
+        callbackURL: `${frontendOrigin}/`,
+        errorCallbackURL: `${frontendOrigin}/auth/error`,
       });
 
       if (error) {
@@ -107,7 +113,7 @@ export const authProvider: AuthProvider = {
   forgotPassword: async ({ email }) => {
     const { error } = await authClient.requestPasswordReset({
       email,
-      redirectTo: "/reset-password",
+      redirectTo: `${frontendOrigin}/reset-password`,
     });
 
     if (error) {
