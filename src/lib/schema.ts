@@ -16,10 +16,14 @@ export const subjectSchema = z.object({
     code: z.string().min(5, "Subject code must be at least 5 characters"),
     description: z
         .string()
-        .min(5, "Subject description must be at least 5 characters"),
-    department: z
-        .string()
-        .min(2, "Subject department must be at least 2 characters"),
+        .min(5, "Subject description must be at least 5 characters")
+        .max(255, "Subject description must be at most 255 characters"),
+    departmentId: z.coerce
+        .number({
+            required_error: "Department is required",
+            invalid_type_error: "Department is required",
+        })
+        .min(1, "Department is required"),
 });
 
 const scheduleSchema = z.object({

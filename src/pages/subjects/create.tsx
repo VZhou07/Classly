@@ -2,7 +2,7 @@ import React from "react";
 import { CreateView } from "@/components/refine-ui/views/create-view";
 import { Breadcrumb } from "@/components/refine-ui/layout/breadcrumb";
 import { Button } from "@/components/ui/button";
-import { useBack, type HttpError } from "@refinedev/core";
+import { useBack, useList, type HttpError } from "@refinedev/core";
 import { useForm } from "@refinedev/react-hook-form";
 import { Separator } from "@/components/ui/separator";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
@@ -33,7 +33,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { RequireRole } from "@/components/require-role";
-import { DEPARTMENT_OPTIONS } from "@/constants";
+import type { Department } from "@/types";
 
 type CreateSubjectFormOutput = z.infer<typeof subjectSchema>;
 
@@ -48,7 +48,7 @@ const Create = () => {
       name: "",
       code: "",
       description: "",
-      department: "",
+      departmentId: undefined,
     },
     refineCoreProps: {
       resource: "subjects",
@@ -62,6 +62,13 @@ const Create = () => {
       },
     },
   });
+
+  const { query: DepartmentsQuery } = useList({
+    resource: "departments",
+    pagination: { pageSize: 100 },
+  });
+  const departments = (DepartmentsQuery.data?.data ?? []) as Department[];
+  const departmentIsLoading = DepartmentsQuery.isLoading;
 
   function onSubmit(data: CreateSubjectFormOutput) {
     onFinish(data);
@@ -143,8 +150,9 @@ const Create = () => {
                   />
 
                   <Controller
-                    name="department"
+                    name="departmentId"
                     control={form.control}
+                    disabled={departmentIsLoading}
                     render={({ field, fieldState }) => (
                       <Field
                         data-invalid={fieldState.invalid}
@@ -157,8 +165,16 @@ const Create = () => {
                           </span>
                         </FieldLabel>
                         <Select
-                          value={field.value ? field.value : undefined}
-                          onValueChange={field.onChange}
+                          name={field.name}
+                          disabled={field.disabled}
+                          value={
+                            field.value === undefined || field.value === null
+                              ? undefined
+                              : String(field.value)
+                          }
+                          onValueChange={(value) =>
+                            field.onChange(Number(value))
+                          }
                           onOpenChange={(open) => {
                             if (!open) field.onBlur();
                           }}
@@ -171,12 +187,12 @@ const Create = () => {
                             <SelectValue placeholder="Select a department" />
                           </SelectTrigger>
                           <SelectContent className="max-h-72 min-w-[var(--radix-select-trigger-width)]">
-                            {DEPARTMENT_OPTIONS.map((department) => (
+                            {departments.map((department) => (
                               <SelectItem
-                                key={department.value}
-                                value={department.value}
+                                key={department.id}
+                                value={String(department.id)}
                               >
-                                {department.label}
+                                {department.name}
                               </SelectItem>
                             ))}
                           </SelectContent>
@@ -206,6 +222,7 @@ const Create = () => {
                           id="rhf-create-subject-form-description"
                           placeholder="Describe what this subject covers."
                           rows={6}
+                          maxLength={255}
                           className="min-h-32 w-full resize-none text-base"
                           aria-invalid={fieldState.invalid}
                         />

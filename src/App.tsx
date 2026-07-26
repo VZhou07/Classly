@@ -73,6 +73,10 @@ function App() {
                   meta:{label:"Subjects", icon:<Book/>}
                 },
                 {
+                  name: "departments",
+                  meta: { hide: true },
+                },
+                {
                   name: "classes",
                   list:"/classes",
                   create:"/classes/create",
