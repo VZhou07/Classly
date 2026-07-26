@@ -1,9 +1,17 @@
+export type Department = {
+    id: number;
+    code: string;
+    name: string;
+    description: string;
+};
+
 export type Subject = {
     id: number;
     name: string;
     code: string;
     description: string;
-    department: string;
+    departmentId: number;
+    department?: Department;
     createdAt?: string;
 };
 
@@ -106,12 +114,6 @@ export function toClassScheduleSlot(schedule: Schedule): ClassScheduleSlot {
         end: schedule.end ?? schedule.endTime ?? "",
     };
 }
-
-export type Department = {
-    id: number;
-    name: string;
-    description: string;
-};
 
 export type ClassDetails = {
     id: number;
