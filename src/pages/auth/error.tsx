@@ -51,7 +51,7 @@ const ERROR_MESSAGES: Record<string, { title: string; description: string }> = {
 };
 
 function resolveError(code: string | null, rawMessage: string | null) {
-  if (code && ERROR_MESSAGES[code]) {
+  if (code && Object.prototype.hasOwnProperty.call(ERROR_MESSAGES, code)) {
     return { code, ...ERROR_MESSAGES[code] };
   }
 
