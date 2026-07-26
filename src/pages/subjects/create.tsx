@@ -65,7 +65,6 @@ const Create = () => {
 
   const { query: DepartmentsQuery } = useList({
     resource: "departments",
-    pagination: { pageSize: 100 },
   });
   const departments = (DepartmentsQuery.data?.data ?? []) as Department[];
   const departmentIsLoading = DepartmentsQuery.isLoading;
