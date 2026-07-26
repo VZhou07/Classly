@@ -33,6 +33,8 @@ import Register from "./pages/register";
 import ForgotPassword from "./pages/forgot-password";
 import ResetPassword from "./pages/reset-password";
 import AcceptInvite from "./pages/accept-invite";
+import AuthErrorPage from "./pages/auth/error";
+import NotFoundPage from "./pages/not-found";
 import InviteCreate from "./pages/invites/create";
 import InvitesList from "./pages/invites/list";
 import JoinClass from "./pages/join-class";
@@ -144,6 +146,8 @@ function App() {
                 </Route>
 
                 <Route path="/accept-invite" element={<AcceptInvite />} />
+                <Route path="/auth/error" element={<AuthErrorPage />} />
+                <Route path="*" element={<NotFoundPage />} />
               </Routes>
               <Toaster />
               <RefineKbar />
