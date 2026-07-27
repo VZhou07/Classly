@@ -6,7 +6,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { SidebarTrigger, useSidebar } from "@/components/ui/sidebar";
+import { useSidebar } from "@/components/ui/sidebar";
 import { cn } from "@/lib/utils";
 import {
   useActiveAuthProvider,
@@ -47,7 +47,7 @@ function DesktopHeader() {
 }
 
 function MobileHeader() {
-  const { open, isMobile } = useSidebar();
+  const { open, toggleSidebar } = useSidebar();
 
   const { title } = useRefineOptions();
 
@@ -69,16 +69,10 @@ function MobileHeader() {
         "z-40"
       )}
     >
-      <SidebarTrigger
-        className={cn("text-muted-foreground", "rotate-180", "ml-1", {
-          "opacity-0": open,
-          "opacity-100": !open || isMobile,
-          "pointer-events-auto": !open || isMobile,
-          "pointer-events-none": open && !isMobile,
-        })}
-      />
-
-      <div
+      <button
+        type="button"
+        onClick={toggleSidebar}
+        aria-label={open ? "Collapse sidebar" : "Expand sidebar"}
         className={cn(
           "whitespace-nowrap",
           "flex",
@@ -89,10 +83,9 @@ function MobileHeader() {
           "gap-2",
           "transition-discrete",
           "duration-200",
-          {
-            "pl-3": !open,
-            "pl-5": open,
-          }
+          "cursor-pointer",
+          "hover:bg-sidebar-accent",
+          "pl-3"
         )}
       >
         <div
@@ -121,7 +114,7 @@ function MobileHeader() {
         >
           {title.text}
         </h2>
-      </div>
+      </button>
 
       <ThemeToggle className={cn("h-8", "w-8")} />
     </header>

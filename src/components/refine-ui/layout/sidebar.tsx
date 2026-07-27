@@ -17,7 +17,6 @@ import {
   SidebarContent as ShadcnSidebarContent,
   SidebarHeader as ShadcnSidebarHeader,
   SidebarRail as ShadcnSidebarRail,
-  SidebarTrigger as ShadcnSidebarTrigger,
   useSidebar as useShadcnSidebar,
 } from "@/components/ui/sidebar";
 import { cn } from "@/lib/utils";
@@ -220,7 +219,7 @@ function SidebarItemLink({ item, selectedKey }: MenuItemProps) {
 
 function SidebarHeader() {
   const { title } = useRefineOptions();
-  const { open, isMobile } = useShadcnSidebar();
+  const { open, toggleSidebar } = useShadcnSidebar();
 
   return (
     <ShadcnSidebarHeader
@@ -231,21 +230,26 @@ function SidebarHeader() {
         "border-border",
         "flex-row",
         "items-center",
-        "justify-between",
         "overflow-hidden"
       )}
     >
-      <div
+      <button
+        type="button"
+        onClick={toggleSidebar}
+        aria-label={open ? "Collapse sidebar" : "Expand sidebar"}
         className={cn(
           "whitespace-nowrap",
           "flex",
           "flex-row",
           "h-full",
+          "w-full",
           "items-center",
           "justify-start",
           "gap-2",
           "transition-discrete",
           "duration-200",
+          "cursor-pointer",
+          "hover:bg-sidebar-accent",
           {
             "pl-3": !open,
             "pl-5": open,
@@ -278,16 +282,7 @@ function SidebarHeader() {
         >
           {title.text}
         </h2>
-      </div>
-
-      <ShadcnSidebarTrigger
-        className={cn("text-muted-foreground", "mr-1.5", {
-          "opacity-0": !open,
-          "opacity-100": open || isMobile,
-          "pointer-events-auto": open || isMobile,
-          "pointer-events-none": !open && !isMobile,
-        })}
-      />
+      </button>
     </ShadcnSidebarHeader>
   );
 }
