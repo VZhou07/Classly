@@ -95,7 +95,18 @@ function MobileHeader() {
           }
         )}
       >
-        <div>{title.icon}</div>
+        <div
+          className={cn(
+            "size-8",
+            "shrink-0",
+            "overflow-hidden",
+            "[&>img]:size-full",
+            "[&>img]:object-contain",
+            "[&>svg]:size-full",
+          )}
+        >
+          {title.icon}
+        </div>
         <h2
           className={cn(
             "text-sm",
