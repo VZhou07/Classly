@@ -12,7 +12,6 @@ jobs:
     env:
       # Dummy values so Vite build can resolve required VITE_* vars
       VITE_API_URL: https://example.com
-      VITE_BACKEND_BASE_URL: http://localhost:8000/api/
       VITE_BACKEND_URL: http://localhost:8000
       VITE_CLOUDINARY_UPLOAD_URL: https://api.cloudinary.com/v1_1/demo/image/upload
       VITE_CLOUDINARY_CLOUD_NAME: demo

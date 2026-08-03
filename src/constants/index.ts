@@ -65,8 +65,21 @@ const getEnvVar = (key: string): string => {
 
 export const CLOUDINARY_UPLOAD_URL = getEnvVar("VITE_CLOUDINARY_UPLOAD_URL");
 export const CLOUDINARY_CLOUD_NAME = getEnvVar("VITE_CLOUDINARY_CLOUD_NAME");
-export const BACKEND_BASE_URL = getEnvVar("VITE_BACKEND_BASE_URL");
-export const BACKEND_URL = getEnvVar("VITE_BACKEND_URL");
+
+/** Strip trailing slash so `/api/` joins cleanly. */
+const normalizeOrigin = (url: string) => url.replace(/\/$/, "");
+
+/**
+ * API origin. In production we use the page origin so session cookies stay
+ * first-party (Vercel/Vite proxy /api to the backend). Cross-site
+ * SameSite=None cookies are blocked on mobile Safari.
+ */
+export const BACKEND_URL =
+  typeof window !== "undefined" && import.meta.env.PROD
+    ? window.location.origin
+    : normalizeOrigin(getEnvVar("VITE_BACKEND_URL"));
+
+export const BACKEND_BASE_URL = `${BACKEND_URL}/api/`;
 
 export const BASE_URL =  import.meta.env.VITE_API_URL;
 export const ACCESS_TOKEN_KEY = import.meta.env.VITE_ACCESS_TOKEN_KEY
