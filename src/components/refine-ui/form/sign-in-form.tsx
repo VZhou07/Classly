@@ -108,8 +108,10 @@ export const SignInForm = () => {
               <Label htmlFor="email">Email</Label>
               <Input
                 id="email"
+                name="email"
                 type="email"
                 placeholder=""
+                autoComplete="email"
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
@@ -120,6 +122,9 @@ export const SignInForm = () => {
             >
               <Label htmlFor="password">Password</Label>
               <InputPassword
+                id="password"
+                name="password"
+                autoComplete="current-password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
